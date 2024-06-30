@@ -1,0 +1,76 @@
+{% load custom_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Orders</title>
+  <link
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+rel="stylesheet"
+/>
+<!-- Google Fonts -->
+<link
+href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+rel="stylesheet"
+/>
+<!-- MDB -->
+<link
+href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.css"
+rel="stylesheet"
+/>
+</head>
+<body>
+  <h1>Total Orders</h1>  
+<div class="container">
+  <div class="border rounded p-4 m-4">
+       <a href="{% url 'cart_url' %}"><p class="display-4 pl-4 ml-4 btn btn-success rounded-pill">Cart</p></a>
+       <hr>
+       <table class="table align-middle mb-0 bg-white">
+        <thead class="bg-light">
+               <tr>
+                   <th>Order-Id.</th>
+                   <th>Order time</th>
+                   <th>Price</th>
+                   <th>Tax</th>
+                  <th>Total Amount</th>
+                  <th>invoice</th>
+                  <th>Action</th>
+                  
+               </tr>
+           </thead>
+           <tbody>
+               {% if orders %}
+               {% for product in orders %}
+               <tr>
+                <td><a href="{% url 'orderitem_url' product.id %}">{{product.id}}</td>
+                   <td>{{product.order_date}}</td>
+                   <td>₹ {{product.subtotal_amount|custom_floatformat:2}}</td>
+                   <td>₹ {{product.tax|custom_floatformat:2}}</td>
+                   <td>₹ {{product.total_amount|custom_floatformat:2}}</td>
+                   <td><a href="{% url 'render_invoice_user_url' product.id %}"><button class="btn btn-warning">Invoice</a>
+                   <td><a href="{% url 'delete_order_url' product.id %}"><button class="btn btn-danger">Cancel Order</button></td>
+               </tr>
+
+               {% endfor %}
+               {% else %}
+               <tr>
+                <td colspan="6"><h2>No order placed yet!</h2></td>
+                </tr>
+                {% endif %}
+                <tr>
+                  <td colspan="3"></td>
+                  <td colspan="0">Total</td>
+                  <td>{{total_amount_sum|custom_floatformat:2}}</td>
+                </tr>
+           </tbody>
+      </table>
+</div></div>
+
+
+</footer>
+</body>
+</html>
+ 
+
+
+
+

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Digital Signature</title>
+</head>
+<body>
+    <h2>Generate Digital Signature</h2>
+    <form method="POST" action="{% url 'generate_signature' %}">
+        {% csrf_token %}
+        <label for="data">Data:</label>
+        <input type="text" name="data" required><br><br>
+        <input type="submit" value="Generate Signature">
+    </form>
+</body>
+</html>

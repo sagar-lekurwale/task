@@ -1,0 +1,134 @@
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .invoice {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .invoice .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .invoice .header .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .invoice .header .info {
+      text-align: right;
+    }
+
+    .invoice .header .info span {
+      display: block;
+    }
+
+    .invoice .content {
+      margin-bottom: 40px;
+    }
+
+    .invoice .content .details {
+      margin-bottom: 20px;
+    }
+
+    .invoice .content .details .left {
+      float: left;
+    }
+
+    .invoice .content .details .right {
+      float: right;
+      text-align: right;
+    }
+
+    .invoice .content table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .invoice .content table th,
+    .invoice .content table td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .invoice .content table th {
+      background-color: #f5f5f5;
+    }
+
+    .invoice .content .total {
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .invoice .footer {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice">
+    <div class="header">
+      <div class="logo">Shopping Cart Inc.</div>
+      <div class="info">
+        <span>795 Folsom Ave, Suite 600</span>
+        <span>San Francisco, CA 94107</span>
+        <span>Phn : (804) 123-5432</span>
+		<span>info@shoppingcart.com</span>
+      </div>
+    </div>
+    <div class="content">
+     <table>
+        <h3>Report</h3>
+        <thead>
+          <tr>
+            <th>Order-Id</th>
+            <th>Product</th>
+            <th>Order-date</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+			{% for order in order %}
+			<tr>
+				<td>{{ order.id }}</td>
+				<td>
+                    {% for product in order.product.all %}
+                      {{ product.product_name }}
+                      {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </td>
+				<td>{{ order.order_date }}</td>
+				<td>₹ {{ order.total_amount|custom_floatformat:2 }}</td>
+			  </tr>
+			  {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="total">Total:</td>
+            <td>₹ {{total_bill|custom_floatformat:2}}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="footer">
+	  <a href="{% url 'report_pdf_url' %}" target="_blank"><button>Download PDF</button></a>
+    </div>
+  </div>
+</body>
+</html>

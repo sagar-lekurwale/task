@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Digital Signature</title>
+</head>
+<body>
+    <h2>Verification Result</h2>
+    {% if is_valid %}
+        <p>The digital signature is valid.</p>
+    {% else %}
+        <p>The digital signature is not valid.</p>
+    {% endif %}
+</body>
+</html>

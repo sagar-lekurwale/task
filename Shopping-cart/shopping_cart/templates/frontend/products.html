@@ -1,0 +1,210 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>products</title>
+    <!-- Font Awesome -->
+<link
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+rel="stylesheet"
+/>
+<!-- Google Fonts -->
+<link
+href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+rel="stylesheet"
+/>
+<!-- MDB -->
+<link
+href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.css"
+rel="stylesheet"
+/>
+<style>
+  .hidden {
+    display: none;
+  }
+</style>
+</head>
+<body>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-white bg-white">
+        <!-- Container wrapper -->
+        <div class="container">    
+          <!-- Toggle button -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#navbarSupportedContent1"
+            aria-controls="navbarSupportedContent1"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+      
+          <!-- Collapsible wrapper -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent1">      
+            <!-- Navbar brand -->
+            
+            <!-- Left links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item active">
+                <a class="nav-link " href="#">Home</a>
+              </li>
+              {% if request.session.username %}
+              <li class="nav-item">
+                <a class="nav-link" href="#">Welcome {{request.session.username}}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout_url'%}">Logout</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login_url'%}">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'register_url' %}">register</a>
+              </li>
+              {% endif %}
+              {% if request.session.is_superuser %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'adminview_url' %}">DashBoard</a>
+              </li>
+              {% endif %}
+            </ul>
+            <!-- Left links -->      
+          </div>
+          <!-- Collapsible wrapper -->
+          
+          <!-- Right elements -->
+          
+          <div class="d-flex align-items-center">
+            <!-- Icon -->
+            {% if request.session.username %}
+            <a class="nav-link me-3" href="{% url 'cart_url'%}">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="badge rounded-pill badge-notification bg-danger">{{ cart_items_count }}</span>
+            </a>
+            {% endif %}
+            <a class="nav-link me-3" href="#">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a class="nav-link me-3" href="#">
+              <i class="fab fa-twitter"></i>
+            </a>
+            
+          </div>
+          <!-- Right elements -->
+          
+        </div>
+        <!-- Container wrapper -->
+      </nav>
+      <!-- Navbar -->
+      
+       <!--Main layout-->
+       <br><br>
+      <main>
+      <div class="container">
+        <!-- Navbar -->
+      <br><br>
+      <!-- Navbar -->
+        
+      <!-- Products -->
+        <section>
+        <div class="text-center">
+          <div class="row">
+            {% for obj in page_obj %}
+            <div class="col-lg-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                  data-mdb-ripple-color="light">
+                  {% if obj.image %}
+                  <img src="{{obj.image}}" alt="" class="w-100">
+                  {% else %}
+                  <img src="/static/images/no-image.jpg" alt="no image" class="w-100">
+                  {% endif %}
+                  <a href="{% url 'singleproduct' obj.id %}">
+                       <div class="hover-overlay">
+                      <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                    </div>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <a href="" class="text-reset">
+                    <h5 class="card-title mb-2">{{obj.product_name}}</h5>
+                  </a>
+                  <a href="" class="text-reset ">
+                    <p>{{obj.description}}</p>
+                  </a>
+                  <p class="hidden">{{obj.id}}</p>
+                  <h6 class="mb-3 price">₹ {{obj.price|custom_floatformat:2}}</h6>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            
+          </div>
+        </div>
+      </section>
+        
+      <!-- Pagination -->
+      <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {% endif %}
+  
+          {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+          <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+          {% endif %}
+          {% endfor %}
+  
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+  
+      <!-- Pagination -->  
+      </div>
+      </main>
+       <!--Main layout-->
+      
+      <footer class="text-center text-white mt-4" style="background-color: #607D8B">
+
+      
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+          © 2023 Copyright:
+          <a class="text-white" href="https://mdbootstrap.com/">Shopping_cart.com</a>
+        </div>
+        <!-- Copyright -->
+      </footer>
+</body>
+</html>
